@@ -21,7 +21,7 @@ export const PATCH = async (
 };
 
 async function Post(data: any) {
-  const admin = await prisma.admin.findUnique({
+  const admin = await prisma.user.findUnique({
     where: {
       id: Number(data.get("id")),
     },
@@ -38,7 +38,7 @@ async function Post(data: any) {
 
   const hashPassword = await bcrypt.hash(String(data.get("passBaru")), 10);
 
-  await prisma.admin.update({
+  await prisma.user.update({
     where: {
       id: Number(data.get("id")),
     },
