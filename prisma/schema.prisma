@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_URL")
+}
+
+
+model Bidang {
+  id                  Int             @id @default(autoincrement())
+  nama                String
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  user                User[]
+} 
+
+model Jabatan {
+  id                  Int             @id @default(autoincrement())
+  atasanId            Int?
+  nama                String
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  user                User[]
+  atasan              Jabatan?        @relation("AtasanBawahan", fields: [atasanId], references: [id])
+  bawahan             Jabatan[]       @relation("AtasanBawahan")
+  disposisi           Disposisi[]
+} 
+
+model Instalasi {
+  id                  Int             @id @default(autoincrement())
+  nama                String
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  user                User[]
+} 
+
+model Ruangan {
+  id                  Int             @id @default(autoincrement())
+  nama                String
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  user                User[]
+} 
+
+model Output {
+  id                  Int             @id @default(autoincrement())
+  nama                String
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  user                User[]
+  usulan              Usulan[]
+} 
+
+model User {
+  id                  Int             @id @default(autoincrement())
+  bidangId            Int?
+  instalasiId         Int?
+  ruanganId           Int?
+  outputId            Int?
+  jabatanId           Int?
+  nama                String
+  username            String          @unique
+  password            String
+  role                String          @default("user")
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  bidang              Bidang?         @relation(fields: [bidangId], references: [id])
+  jabatan             Jabatan?        @relation(fields: [jabatanId], references: [id])
+  instalasi           Instalasi?      @relation(fields: [instalasiId], references: [id])
+  ruangan             Ruangan?        @relation(fields: [ruanganId], references: [id])
+  output              Output?         @relation(fields: [outputId], references: [id])
+  usulan              Usulan[]
+  disposisi           Disposisi[]
+} 
+
+model Komponen {
+  id                  Int             @id @default(autoincrement())
+  nama                String
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  usulan              Usulan[]
+} 
+
+model Usulan {
+  id                  Int             @id @default(autoincrement())
+  userId              Int
+  komponenId          Int
+  outputId            Int?
+  judul               String
+  uraian              String?
+  volume              Int
+  satuan              String
+  spesifikasi         String?
+  merk                String?
+  keterangan          String?
+  landasan            String?
+  prioritas           Int?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  komponen            Komponen        @relation(fields: [komponenId], references: [id])
+  output              Output?         @relation(fields: [outputId], references: [id])
+  disposisi           Disposisi[]
+} 
+
+model Disposisi {
+  id                  Int             @id @default(autoincrement())
+  userId              Int?
+  jabatanId           Int?
+  usulanId            Int
+  status              Int
+  catatan             String?
+  ditolak             Int             @default(0)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  usulan              Usulan          @relation(fields: [usulanId], references: [id], onDelete: Cascade)
+  user                User?           @relation(fields: [userId], references: [id])
+  jabatan             Jabatan?        @relation(fields: [jabatanId], references: [id])
+} 
