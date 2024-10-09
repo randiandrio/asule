@@ -1,4 +1,4 @@
-import { NextAuthOptions } from "next-auth";
+import { AdminLogin, NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
@@ -26,6 +26,9 @@ export const authOption: NextAuthOptions = {
           where: {
             username: credentials!.username,
           },
+          include: {
+            jabatan: true,
+          },
         });
 
         if (!x) {
@@ -38,6 +41,8 @@ export const authOption: NextAuthOptions = {
 
         return {
           id: x.id,
+          jabatanId: x.jabatanId,
+          jabatan: x.jabatan ? x.jabatan.nama : "-",
           nama: x.nama,
           role: x.role,
         } as any;

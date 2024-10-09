@@ -144,6 +144,19 @@ function Add({
             </div>
 
             <div className="mb-3 row">
+              <label className="col-sm-4 col-form-label">
+                Uraian Komponen Belanja
+              </label>
+              <div className="col-sm-8">
+                <textarea
+                  className="form-control"
+                  value={uraian}
+                  onChange={(e) => seturaian(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="mb-3 row">
               <label className="col-sm-4 col-form-label">Volume</label>
               <div className="col-sm-4">
                 <input

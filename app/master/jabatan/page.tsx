@@ -62,7 +62,7 @@ const JabatanPage = () => {
       width: "120px",
       cell: (row) => (
         <div className="d-flex">
-          {row.id > 1 && (
+          {row.id > 6 && (
             <>
               <Update reload={reload} jab={row} jabatans={jabatans} />
               <Delete reload={reload} jabatan={row} />

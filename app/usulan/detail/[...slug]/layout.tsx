@@ -4,8 +4,8 @@ export const metadata = {
   title: "Detail Usulan",
 };
 
-function DetailLayout({ children }: { children: React.ReactNode }) {
+function UserLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-export default DetailLayout;
+export default UserLayout;

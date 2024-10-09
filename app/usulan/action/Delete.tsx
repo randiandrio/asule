@@ -41,10 +41,7 @@ function Delete({ usulan, reload }: { usulan: Usulan; reload: Function }) {
 
   return (
     <div>
-      <span
-        onClick={handleShow}
-        className="btn btn-danger shadow btn-xs sharp mx-1"
-      >
+      <span onClick={handleShow} className="btn btn-danger shadow btn-xs mx-1">
         <i className="fa fa-trash"></i>
       </span>
 

@@ -42,8 +42,10 @@ export default function Header() {
                 <div className="px-3 pt-1">
                   {session.status == "authenticated" ? (
                     <>
-                      <h4 style={{ lineHeight: "0px" }}>A-Sule</h4>
-                      <small style={{ lineHeight: "15px" }}>{akun.nama}</small>
+                      <h4 style={{ lineHeight: "0px" }}>{akun.nama}</h4>
+                      <small style={{ lineHeight: "15px" }}>
+                        {akun.jabatan}
+                      </small>
                     </>
                   ) : (
                     <h4 style={{ lineHeight: "0px" }}>A-Sule</h4>

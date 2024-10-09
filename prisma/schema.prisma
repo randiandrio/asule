@@ -97,6 +97,8 @@ model Usulan {
   keterangan          String?
   landasan            String?
   prioritas           Int?
+  accPimpinan         Int             @default(0)
+  isFinish            Int             @default(0)
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
   user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getToken } from "next-auth/jwt";
 import { AdminLogin } from "next-auth";
+import { tree } from "next/dist/build/templates/app-page";
 
 const prisma = new PrismaClient();
 
@@ -18,6 +19,11 @@ export const GET = async (
 
   if (params.slug[0] === "data") {
     const result = await Data(adminLogin);
+    return NextResponse.json(result, { status: 200 });
+  }
+
+  if (params.slug[0] === "detail") {
+    const result = await Detail(params.slug[1], adminLogin);
     return NextResponse.json(result, { status: 200 });
   }
 
@@ -70,10 +76,49 @@ async function Data(admin: AdminLogin) {
     },
   });
 
-  return data;
+  return { data: data, userId: admin.id };
+}
+
+async function Detail(id: String, admin: AdminLogin) {
+  const usulan = await prisma.usulan.findUnique({
+    where: { id: Number(id) },
+    include: {
+      user: true,
+      komponen: true,
+      disposisi: {
+        include: {
+          user: {
+            include: {
+              jabatan: true,
+              bidang: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  const user = await prisma.user.findUnique({
+    where: {
+      id: Number(admin.id),
+    },
+  });
+
+  const disposisi = await prisma.disposisi.findMany({
+    where: {
+      userId: Number(admin.id),
+      status: 0,
+      usulanId: Number(id),
+    },
+  });
+
+  return { data: usulan, user: user, disposisi: disposisi.length > 0 };
 }
 
 async function Post(data: any, admin: AdminLogin) {
+  const user = await prisma.user.findUnique({
+    where: { id: Number(admin.id) },
+  });
+
   if (String(data.get("mode")) == "add") {
     const usulan = await prisma.usulan.create({
       data: {
@@ -88,10 +133,6 @@ async function Post(data: any, admin: AdminLogin) {
         keterangan: String(data.get("keterangan")),
         landasan: String(data.get("landasan")),
       },
-    });
-
-    const user = await prisma.user.findUnique({
-      where: { id: Number(admin.id) },
     });
 
     const jabatan = await prisma.jabatan.findUnique({
@@ -141,6 +182,119 @@ async function Post(data: any, admin: AdminLogin) {
       },
     });
     return { error: false, message: "Data usulan berhasil diperbarui" };
+  } else if (String(data.get("mode")) == "tolak") {
+    await prisma.disposisi.updateMany({
+      where: {
+        userId: Number(admin.id),
+        usulanId: Number(data.get("id")),
+      },
+      data: {
+        status: 1,
+        ditolak: 1,
+        catatan: String(data.get("catatan")),
+      },
+    });
+    return { error: false, message: "Data usulan telah di tolak" };
+  } else if (String(data.get("mode")) == "Teruskan") {
+    const jabatan = await prisma.jabatan.findUnique({
+      where: { id: Number(user?.jabatanId) },
+      include: {
+        atasan: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    await prisma.disposisi.updateMany({
+      where: {
+        userId: Number(admin.id),
+        usulanId: Number(data.get("id")),
+      },
+      data: {
+        status: 1,
+        ditolak: 0,
+        catatan: String(data.get("catatan")),
+      },
+    });
+
+    await prisma.disposisi.create({
+      data: {
+        userId: Number(jabatan?.atasan?.user[0].id),
+        jabatanId: Number(jabatan?.atasanId),
+        usulanId: Number(data.get("id")),
+        status: 0,
+        catatan: "",
+      },
+    });
+
+    return { error: false, message: "Data Usulan berhasil diteruskan" };
+  } else if (String(data.get("mode")) == "Disposisi") {
+    if (admin.jabatanId == 1) {
+      const usrs = await prisma.user.findMany({
+        where: {
+          jabatanId: 6,
+        },
+      });
+
+      if (usrs.length == 0)
+        return { error: true, message: "Belum ada Kabid Perencanaan" };
+
+      await prisma.usulan.update({
+        where: { id: Number(data.get("id")) },
+        data: {
+          accPimpinan: 1,
+        },
+      });
+
+      await prisma.disposisi.updateMany({
+        where: {
+          userId: Number(admin.id),
+          usulanId: Number(data.get("id")),
+        },
+        data: {
+          status: 1,
+          ditolak: 0,
+          catatan: String(data.get("catatan")),
+        },
+      });
+
+      await prisma.disposisi.create({
+        data: {
+          userId: Number(usrs[0].id),
+          jabatanId: Number(usrs[0].jabatanId),
+          usulanId: Number(data.get("id")),
+          status: 0,
+          catatan: "",
+        },
+      });
+    }
+
+    if (admin.jabatanId == 6) {
+      await prisma.disposisi.updateMany({
+        where: {
+          userId: Number(admin.id),
+          usulanId: Number(data.get("id")),
+        },
+        data: {
+          status: 1,
+          ditolak: 0,
+          catatan: String(data.get("catatan")),
+        },
+      });
+
+      await prisma.usulan.update({
+        where: {
+          id: Number(data.get("id")),
+        },
+        data: {
+          isFinish: 1,
+        },
+      });
+    }
+
+    return { error: false, message: "Data Usulan berhasil didisposisi" };
   } else {
     await prisma.usulan.delete({
       where: { id: Number(data.get("id")) },

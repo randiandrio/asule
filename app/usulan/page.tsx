@@ -5,7 +5,8 @@ import DataTable, { TableColumn } from "react-data-table-component";
 import Add from "./action/Add";
 import Update from "./action/update";
 import Delete from "./action/Delete";
-import { Komponen } from "@prisma/client";
+import { Komponen, User } from "@prisma/client";
+import Link from "next/link";
 
 const customStyles = {
   headCells: {
@@ -22,6 +23,7 @@ const UsulanPage = () => {
   const [perPage, setPerpage] = useState(10);
   const [isLoading, setLoading] = useState(true);
   const [datas, setDatas] = useState<any[]>([]);
+  const [userId, setUserId] = useState(0);
   const [komponens, setKomponens] = useState<Komponen[]>([]);
 
   useEffect(() => {
@@ -41,7 +43,8 @@ const UsulanPage = () => {
     fetch(`/usulan/api/data`)
       .then((res) => res.json())
       .then((x) => {
-        setDatas(x);
+        setDatas(x.data);
+        setUserId(x.userId);
         setLoading(false);
       });
   };
@@ -86,11 +89,24 @@ const UsulanPage = () => {
     },
     {
       name: "Aksi",
-      width: "120px",
+      width: "260px",
       cell: (row) => (
         <div className="d-flex">
-          <Update reload={reload} usulan={row} komponens={komponens} />
-          <Delete reload={reload} usulan={row} />
+          {row.userId == userId && (
+            <>
+              <Update reload={reload} usulan={row} komponens={komponens} />
+              <Delete reload={reload} usulan={row} />
+            </>
+          )}
+
+          <Link href={`/usulan/detail/${row.id}`}>
+            <button
+              type="button"
+              className="btn btn-success shadow btn-xs mx-1"
+            >
+              Lihat Usulan
+            </button>
+          </Link>
         </div>
       ),
     },

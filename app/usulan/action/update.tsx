@@ -79,10 +79,7 @@ function Update({
 
   return (
     <div>
-      <span
-        onClick={handleShow}
-        className="btn btn-info shadow btn-xs sharp mx-1"
-      >
+      <span onClick={handleShow} className="btn btn-info shadow btn-xs mx-1">
         <i className="fa fa-edit"></i>
       </span>
 
@@ -128,6 +125,19 @@ function Update({
                     </option>
                   ))}
                 </select>
+              </div>
+            </div>
+
+            <div className="mb-3 row">
+              <label className="col-sm-4 col-form-label">
+                Uraian Komponen Belanja
+              </label>
+              <div className="col-sm-8">
+                <textarea
+                  className="form-control"
+                  value={uraian}
+                  onChange={(e) => seturaian(e.target.value)}
+                />
               </div>
             </div>
 
