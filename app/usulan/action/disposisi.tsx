@@ -43,7 +43,7 @@ function Disposisi({
     const formData = new FormData();
     formData.append(
       "mode",
-      Number(jabatanId) > 1 || Number(accPimpinan) > 0
+      Number(jabatanId) > 1 && Number(accPimpinan) == 0
         ? "Teruskan"
         : "Disposisi"
     );
@@ -72,7 +72,9 @@ function Disposisi({
         type="button"
         className="btn me-2 btn-primary light"
       >
-        {Number(jabatanId) > 1 ? "Teruskan" : "Disposisi"}
+        {Number(jabatanId) > 1 && Number(accPimpinan) == 0
+          ? "Teruskan"
+          : "Disposisi"}
       </button>
 
       <Modal
@@ -85,7 +87,9 @@ function Disposisi({
         <form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
             <Modal.Title>
-              {Number(jabatanId) > 1 ? "Teruskan" : "Disposisi"}
+              {Number(jabatanId) > 1 && Number(accPimpinan) == 0
+                ? "Teruskan"
+                : "Disposisi"}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -113,7 +117,9 @@ function Disposisi({
               Close
             </button>
             <button type="submit" className="btn btn-primary light">
-              {Number(jabatanId) > 1 ? "Teruskan" : "Disposisi"}
+              {Number(jabatanId) > 1 && Number(accPimpinan) == 0
+                ? "Teruskan"
+                : "Disposisi"}
             </button>
           </Modal.Footer>
         </form>
