@@ -6,9 +6,9 @@ import Swal from "sweetalert2";
 
 const prisma = new PrismaClient();
 
-export const apiImg = "https://file.kuantar.co.id/storage";
-export const urlUploadGambar = "https://file.kuantar.co.id/api/uploadGambar";
-export const urlHapusGambar = "https://file.kuantar.co.id/api/hapusFile";
+export const apiFile = "https://file.sispol.id/storage/asule";
+export const urlUploadFiles = "https://file.sispol.id/api/uploadFiles";
+
 export const firebaseProject = "pilkada";
 export const tinymceKey = "88q5wvly8zzdap7pwq23poqjt3amwdk1v5iwdg9hr0xnqiq3";
 
@@ -88,20 +88,15 @@ export function tampilLoading() {
   });
 }
 
-export async function uploadGambar(
-  image: File,
-  jenis: String,
-  oldGambar: String
-) {
+export async function uploadMultiFile(files: File[]) {
   const fileData = new FormData();
-  fileData.append("jenis", String(jenis));
-  if (oldGambar != "") {
-    fileData.append("oldGambar", String(oldGambar));
-  }
-  fileData.append("gambar", image);
-  const up = await axios.post(urlUploadGambar, fileData);
+  files.forEach((file) => {
+    fileData.append("files[]", file);
+  });
 
-  return up.data.file;
+  const up = await axios.post(urlUploadFiles, fileData);
+
+  return up.data;
 }
 
 export async function cekUsername(username: String, id: number) {

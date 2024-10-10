@@ -74,6 +74,8 @@ function Disposisi({
       >
         {Number(jabatanId) > 1 && Number(accPimpinan) == 0
           ? "Teruskan"
+          : Number(jabatanId) == 6
+          ? "Anggarkan"
           : "Disposisi"}
       </button>
 
@@ -89,14 +91,14 @@ function Disposisi({
             <Modal.Title>
               {Number(jabatanId) > 1 && Number(accPimpinan) == 0
                 ? "Teruskan"
+                : Number(jabatanId) == 6
+                ? "Anggarkan"
                 : "Disposisi"}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div className="mb-3 row">
-              <label className="col-sm-12 col-form-label">
-                Catatan Lanjutan
-              </label>
+              <label className="col-sm-12 col-form-label">Catatan</label>
               <div className="col-sm-12">
                 <input
                   required
@@ -119,6 +121,8 @@ function Disposisi({
             <button type="submit" className="btn btn-primary light">
               {Number(jabatanId) > 1 && Number(accPimpinan) == 0
                 ? "Teruskan"
+                : Number(jabatanId) == 6
+                ? "Anggarkan"
                 : "Disposisi"}
             </button>
           </Modal.Footer>

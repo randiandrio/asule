@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { tglJamIndo } from "@/app/helper";
+import { apiFile, tglJamIndo } from "@/app/helper";
 import { NextRequest } from "next/server";
 import { useEffect } from "react";
 import { useState } from "react";
 import Disposisi from "../../action/disposisi";
 import Tolak from "../../action/tolak";
-import { User } from "@prisma/client";
+import { Lampiran, User } from "@prisma/client";
 
 const DetailUsulanPage = ({ params }: { params: { slug: string[] } }) => {
   const [isLoading, setLoading] = useState(true);
@@ -95,6 +95,16 @@ const DetailUsulanPage = ({ params }: { params: { slug: string[] } }) => {
                 </table>
 
                 <h4 className="mt-4">File Lampiran</h4>
+
+                <ul>
+                  {data.lampiran.map((x: Lampiran, index: Number) => (
+                    <li key={x.id}>
+                      <a href={`${apiFile}/${x.nama}`} target="_blank">
+                        <h5>Lampiran {Number(index) + 1}</h5>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
               {disposisi && (
@@ -197,7 +207,7 @@ const DetailUsulanPage = ({ params }: { params: { slug: string[] } }) => {
                                     {x.ditolak > 0
                                       ? "Ditolak"
                                       : x.status > 0
-                                      ? "Ditarima"
+                                      ? "Diterima"
                                       : ""}
                                   </td>
                                 </tr>

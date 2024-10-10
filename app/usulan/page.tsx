@@ -83,8 +83,13 @@ const UsulanPage = () => {
       sortable: true,
     },
     {
-      name: "Ruangan",
+      name: "Status",
       selector: (row) => String(row.user.ruangan ? row.user.ruangan.nama : "-"),
+      sortable: true,
+    },
+    {
+      name: "Status",
+      selector: (row) => (row.isFinish > 0 ? "Selesai" : "Onprogress"),
       sortable: true,
     },
     {
@@ -92,7 +97,7 @@ const UsulanPage = () => {
       width: "260px",
       cell: (row) => (
         <div className="d-flex">
-          {row.userId == userId && (
+          {row.userId == userId && row.accPimpinan == 0 && (
             <>
               <Update reload={reload} usulan={row} komponens={komponens} />
               <Delete reload={reload} usulan={row} />

@@ -5,6 +5,8 @@ import Modal from "react-bootstrap/Modal";
 import Swal from "sweetalert2";
 import { resData } from "next-auth";
 import { Komponen } from "@prisma/client";
+import React from "react";
+import { uploadMultiFile } from "@/app/helper";
 
 function Add({
   reload,
@@ -22,6 +24,7 @@ function Add({
   const [merk, setmerk] = useState("");
   const [keterangan, setketerangan] = useState("");
   const [landasan, setlandasan] = useState("");
+  const [lampirans, setLampirans] = useState<File[]>([]);
 
   const [show, setShow] = useState(false);
   const handleClose = () => {
@@ -44,8 +47,16 @@ function Add({
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-
     setPost(true);
+
+    let namaFiles = [];
+
+    if (lampirans.length > 0) {
+      const responseUpload = await uploadMultiFile(lampirans as File[]);
+      if (responseUpload.status && responseUpload.files.length > 0) {
+        namaFiles = responseUpload.files;
+      }
+    }
 
     const formData = new FormData();
     formData.append("mode", "add");
@@ -58,6 +69,10 @@ function Add({
     formData.append("merk", String(merk));
     formData.append("keterangan", String(keterangan));
     formData.append("landasan", String(landasan));
+    if (namaFiles.length > 0) {
+      formData.append("namaFiles", String(namaFiles));
+    }
+
     const x = await axios.patch("/usulan/api/post", formData);
     const pesan = (await x.data) as resData;
     if (!pesan.error) {
@@ -87,6 +102,12 @@ function Add({
     setketerangan("");
     setlandasan("");
   }
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setLampirans(Array.from(event.target.files));
+    }
+  };
 
   return (
     <div>
@@ -226,6 +247,18 @@ function Add({
                 />
               </div>
             </div>
+
+            <div className="mb-3 row">
+              <label className="col-sm-4 col-form-label">Lampiran</label>
+              <div className="col-sm-8">
+                <input
+                  multiple
+                  type="file"
+                  className="form-control"
+                  onChange={handleFileChange}
+                />
+              </div>
+            </div>
           </Modal.Body>
           <Modal.Footer>
             <button
@@ -246,3 +279,10 @@ function Add({
 }
 
 export default Add;
+function useDropzone(): {
+  acceptedFiles: any;
+  getRootProps: any;
+  getInputProps: any;
+} {
+  throw new Error("Function not implemented.");
+}
