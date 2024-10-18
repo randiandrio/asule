@@ -223,6 +223,17 @@ async function Post(data: any, admin: AdminLogin) {
         catatan: String(data.get("catatan")),
       },
     });
+
+    await prisma.usulan.update({
+      where: {
+        id: Number(data.get("id")),
+      },
+      data: {
+        isFinish: 1,
+        status: 2,
+      },
+    });
+
     return { error: false, message: "Data usulan telah di tolak" };
   }
 
@@ -343,6 +354,7 @@ async function Post(data: any, admin: AdminLogin) {
         },
         data: {
           isFinish: 1,
+          status: 1,
         },
       });
     }
