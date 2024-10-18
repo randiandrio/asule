@@ -44,14 +44,11 @@ async function Kelompok(kelompok: String) {
       },
     });
 
-    var grup = x.map(function (item: any) {
-      return item.nama;
-    });
-
     let usulanAll = [];
     let usulanTerima = [];
     let usulanTolak = [];
     let usulanProses = [];
+    let grup = [];
 
     for (let i = 0; i < x.length; i++) {
       const all = await prisma.usulan.aggregate({
@@ -100,11 +97,13 @@ async function Kelompok(kelompok: String) {
           id: true,
         },
       });
-
-      usulanAll.push(all._count.id);
-      usulanTerima.push(terima._count.id);
-      usulanTolak.push(tolak._count.id);
-      usulanProses.push(proses._count.id);
+      if (all._count.id > 0) {
+        grup.push(x[i].nama);
+        usulanAll.push(all._count.id);
+        usulanTerima.push(terima._count.id);
+        usulanTolak.push(tolak._count.id);
+        usulanProses.push(proses._count.id);
+      }
     }
 
     return {
@@ -130,14 +129,11 @@ async function Kelompok(kelompok: String) {
       },
     });
 
-    var grup = x.map(function (item: any) {
-      return item.nama;
-    });
-
     let usulanAll = [];
     let usulanTerima = [];
     let usulanTolak = [];
     let usulanProses = [];
+    let grup = [];
 
     for (let i = 0; i < x.length; i++) {
       const all = await prisma.usulan.aggregate({
@@ -187,10 +183,13 @@ async function Kelompok(kelompok: String) {
         },
       });
 
-      usulanAll.push(all._count.id);
-      usulanTerima.push(terima._count.id);
-      usulanTolak.push(tolak._count.id);
-      usulanProses.push(proses._count.id);
+      if (all._count.id > 0) {
+        grup.push(x[i].nama);
+        usulanAll.push(all._count.id);
+        usulanTerima.push(terima._count.id);
+        usulanTolak.push(tolak._count.id);
+        usulanProses.push(proses._count.id);
+      }
     }
 
     return {
@@ -216,14 +215,11 @@ async function Kelompok(kelompok: String) {
       },
     });
 
-    var grup = x.map(function (item: any) {
-      return item.nama;
-    });
-
     let usulanAll = [];
     let usulanTerima = [];
     let usulanTolak = [];
     let usulanProses = [];
+    let grup = [];
 
     for (let i = 0; i < x.length; i++) {
       const all = await prisma.usulan.aggregate({
@@ -273,10 +269,13 @@ async function Kelompok(kelompok: String) {
         },
       });
 
-      usulanAll.push(all._count.id);
-      usulanTerima.push(terima._count.id);
-      usulanTolak.push(tolak._count.id);
-      usulanProses.push(proses._count.id);
+      if (all._count.id > 0) {
+        grup.push(x[i].nama);
+        usulanAll.push(all._count.id);
+        usulanTerima.push(terima._count.id);
+        usulanTolak.push(tolak._count.id);
+        usulanProses.push(proses._count.id);
+      }
     }
 
     return {
@@ -295,14 +294,11 @@ async function Kelompok(kelompok: String) {
       },
     });
 
-    var grup = x.map(function (item: any) {
-      return item.nama;
-    });
-
     let usulanAll = [];
     let usulanTerima = [];
     let usulanTolak = [];
     let usulanProses = [];
+    let grup = [];
 
     for (let i = 0; i < x.length; i++) {
       const all = await prisma.usulan.aggregate({
@@ -344,10 +340,13 @@ async function Kelompok(kelompok: String) {
         },
       });
 
-      usulanAll.push(all._count.id);
-      usulanTerima.push(terima._count.id);
-      usulanTolak.push(tolak._count.id);
-      usulanProses.push(proses._count.id);
+      if (all._count.id > 0) {
+        grup.push(x[i].nama);
+        usulanAll.push(all._count.id);
+        usulanTerima.push(terima._count.id);
+        usulanTolak.push(tolak._count.id);
+        usulanProses.push(proses._count.id);
+      }
     }
 
     return {

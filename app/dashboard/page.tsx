@@ -149,7 +149,7 @@ function DashboardPage() {
         <div className="col-xl-7 col-lg-8">
           <div className="card">
             <div className="card-header">
-              <h4 className="card-title">Usulan {title}</h4>
+              <h4 className="card-title">Usulan</h4>
               <div className="col-4">
                 <select
                   required
@@ -160,12 +160,10 @@ function DashboardPage() {
                     load1(e.target.value);
                   }}
                 >
-                  <option value="Perbidang">Usulan Per Bidang</option>
-                  <option value="Instalasi">Usulan Per Instalasi</option>
-                  <option value="Ruangan">Usulan Per Ruangan</option>
-                  <option value="Komponen Belanja">
-                    Usulan Per Komponen Belanja
-                  </option>
+                  <option value="Perbidang">Per Bidang</option>
+                  <option value="Instalasi">Per Instalasi</option>
+                  <option value="Ruangan">Per Ruangan</option>
+                  <option value="Komponen Belanja">Per Komponen Belanja</option>
                 </select>
               </div>
             </div>
