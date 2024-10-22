@@ -5,8 +5,9 @@ import DataTable, { TableColumn } from "react-data-table-component";
 import Add from "./action/Add";
 import Update from "./action/update";
 import Delete from "./action/Delete";
-import { Komponen, User } from "@prisma/client";
+import { Komponen } from "@prisma/client";
 import Link from "next/link";
+import * as XLSX from "xlsx";
 
 const customStyles = {
   headCells: {
@@ -83,7 +84,7 @@ const UsulanPage = () => {
       sortable: true,
     },
     {
-      name: "Status",
+      name: "Ruangan",
       selector: (row) => String(row.user.ruangan ? row.user.ruangan.nama : "-"),
       sortable: true,
     },
@@ -116,6 +117,37 @@ const UsulanPage = () => {
       ),
     },
   ];
+
+  const onGetExporProduct = async (title?: string, worksheetname?: string) => {
+    try {
+      if (datas && Array.isArray(datas)) {
+        const dataToExport = datas.map((x: any, index: number) => ({
+          No: index + 1,
+          Judul: x.judul,
+          "Diinput Oleh": x.user.nama,
+          "Komponen Belanja": x.komponen.nama,
+          Bidang: x.user.bidang ? x.user.bidang.nama : "-",
+          Instalasi: x.user.instalasi ? x.user.instalasi.nama : "-",
+          Ruangan: x.user.ruangan ? x.user.ruangan.nama : "-",
+          Status: x.isFinish > 0 ? "Selesai" : "Onprogress",
+        }));
+        // Create Excel workbook and worksheet
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils?.json_to_sheet(dataToExport);
+        XLSX.utils.book_append_sheet(workbook, worksheet, worksheetname);
+        // Save the workbook as an Excel file
+        XLSX.writeFile(workbook, `${title}.xlsx`);
+        console.log(`Exported data to ${title}.xlsx`);
+        setLoading(false);
+      } else {
+        setLoading(false);
+        console.log("#==================Export Error");
+      }
+    } catch (error: any) {
+      setLoading(false);
+      console.log("#==================Export Error", error.message);
+    }
+  };
 
   if (isLoading) return <p>Loading...</p>;
 
@@ -151,8 +183,16 @@ const UsulanPage = () => {
         </div>
       </div>
 
-      <div>
+      <div className="card-header">
         <Add reload={reload} komponens={komponens} />
+
+        <button
+          onClick={() => onGetExporProduct("Usulan", "UsulanExport")}
+          type="button"
+          className="btn btn-info"
+        >
+          Export To Excel
+        </button>
       </div>
     </div>
   );
