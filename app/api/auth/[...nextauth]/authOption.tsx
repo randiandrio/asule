@@ -1,4 +1,4 @@
-import { AdminLogin, NextAuthOptions } from "next-auth";
+import { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
@@ -45,7 +45,7 @@ export const authOption: NextAuthOptions = {
           jabatan: x.jabatan ? x.jabatan.nama : "-",
           nama: x.nama,
           role: x.role,
-        } as any;
+        } as User;
       },
     }),
   ],
@@ -54,10 +54,24 @@ export const authOption: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
-      return { ...token, ...user };
+      if (user) {
+        token.id = user.id;
+        token.jabatanId = user.jabatanId;
+        token.jabatan = user.jabatan;
+        token.nama = user.nama;
+        token.role = user.role;
+      }
+      return token;
     },
     async session({ session, token }) {
-      session = token as any;
+      session.user = {
+        ...session.user,
+        id: Number(token.id),
+        jabatanId: Number(token.jabatanId),
+        jabatan: String(token.jabatan),
+        nama: String(token.nama),
+        role: String(token.role),
+      };
       return session;
     },
   },

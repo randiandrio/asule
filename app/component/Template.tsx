@@ -7,13 +7,11 @@ import Header from "./Header";
 import Swal from "sweetalert2";
 import Link from "next/link";
 import Image from "next/image";
-import { AdminLogin } from "next-auth";
+
 import React from "react";
-import Menu from "./Menu";
 
 export default function Template({ children }: { children: React.ReactNode }) {
-  const session = useSession();
-  const akun = session.data as unknown as AdminLogin;
+  const { data: session } = useSession();
 
   const logout = async () => {
     Swal.fire({
@@ -58,7 +56,64 @@ export default function Template({ children }: { children: React.ReactNode }) {
                 </Link>
               </li>
 
-              <Menu akses={String(akun?.role) == "admin" ? "admin" : "user"} />
+              {session?.user.role == "admin" && (
+                <>
+                  <li>
+                    <a
+                      className="has-arrow "
+                      href="javascript:void(0);"
+                      aria-expanded="false"
+                    >
+                      <div className="menu-icon">
+                        <Image
+                          src="/template/menu/database.png"
+                          width={25}
+                          height={25}
+                          alt="database"
+                        />
+                      </div>
+                      <span className="nav-text">Master Data</span>
+                    </a>
+
+                    <ul>
+                      <li className="mini-dashboard">Master Data</li>
+
+                      <li>
+                        <Link href="/master/bidang">Bidang</Link>
+                      </li>
+                      <li>
+                        <Link href="/master/instalasi">Instalasi</Link>
+                      </li>
+                      <li>
+                        <Link href="/master/ruangan">Ruangan</Link>
+                      </li>
+                      <li>
+                        <Link href="/master/jabatan">Jabatan</Link>
+                      </li>
+                      <li>
+                        <Link href="/master/output">Output</Link>
+                      </li>
+                      <li>
+                        <Link href="/master/komponen">Komponen</Link>
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <Link href="/karyawan" className="" aria-expanded="false">
+                      <div className="menu-icon">
+                        <Image
+                          src="/template/menu/user.png"
+                          width={25}
+                          height={25}
+                          alt="xxx"
+                        />
+                      </div>
+                      <span className="nav-text">Data Karyawan </span>
+                    </Link>
+                  </li>
+                </>
+              )}
 
               <li>
                 <Link href={`/usulan`} className="" aria-expanded="false">

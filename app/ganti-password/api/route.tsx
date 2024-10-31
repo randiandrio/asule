@@ -1,21 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { getToken } from "next-auth/jwt";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-export const PATCH = async (
-  request: NextRequest,
-  { params }: { params: { slug: string[] } }
-) => {
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET,
-  });
-
+export const PATCH = async (request: NextRequest) => {
   const data = await request.formData();
-
   const result = await Post(data);
   return NextResponse.json(result, { status: 200 });
 };

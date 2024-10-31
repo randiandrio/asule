@@ -4,9 +4,6 @@ import ReactEcharts from "echarts-for-react";
 import React from "react";
 
 function DashboardPage() {
-  const [isLoading1, setLoading1] = useState(true);
-  const [isLoading2, setLoading2] = useState(true);
-  const [isLoading3, setLoading3] = useState(true);
   const [opt1, setOpt1] = useState({});
   const [opt2, setOpt2] = useState({});
   const [opt3, setOpt3] = useState({});
@@ -69,7 +66,6 @@ function DashboardPage() {
           ],
         };
         setOpt1(option);
-        setLoading1(false);
       });
   };
 
@@ -114,7 +110,6 @@ function DashboardPage() {
           ],
         };
         setOpt2(option2);
-        setLoading2(false);
 
         const option3 = {
           tooltip: {
@@ -139,7 +134,6 @@ function DashboardPage() {
         };
 
         setOpt3(option3);
-        setLoading3(false);
       });
   };
 

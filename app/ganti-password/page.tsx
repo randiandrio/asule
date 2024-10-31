@@ -2,13 +2,10 @@
 import { useState, SyntheticEvent } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { AdminLogin } from "next-auth";
 import { useSession } from "next-auth/react";
 
 const SettingPage = () => {
-  const session = useSession();
-  const akun = session.data as unknown as AdminLogin;
-
+  const { data: session } = useSession();
   const [isPost, setPost] = useState(false);
   const [passLama, setPassLama] = useState("");
   const [passBaru, setPassBaru] = useState("");
@@ -40,7 +37,7 @@ const SettingPage = () => {
       return;
     }
     const formData = new FormData();
-    formData.append("id", String(akun.id));
+    formData.append("id", String(session?.user.id));
     formData.append("passLama", String(passLama));
     formData.append("passBaru", String(passBaru));
     const response = await axios.patch("/ganti-password/api", formData);

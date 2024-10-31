@@ -7,8 +7,10 @@ import { useState } from "react";
 import Disposisi from "../../action/disposisi";
 import Tolak from "../../action/tolak";
 import { Lampiran, User } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 const DetailUsulanPage = ({ params }: { params: { slug: string[] } }) => {
+  const { data: session } = useSession();
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<any>();
   const [user, setUser] = useState<User>();
@@ -107,7 +109,7 @@ const DetailUsulanPage = ({ params }: { params: { slug: string[] } }) => {
                 </ul>
               </div>
 
-              {disposisi && (
+              {session?.user.role == "user" && disposisi && (
                 <div className="card-footer">
                   <div className="row">
                     <div className="col-6">

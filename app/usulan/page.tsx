@@ -8,6 +8,7 @@ import Delete from "./action/Delete";
 import { Komponen } from "@prisma/client";
 import Link from "next/link";
 import * as XLSX from "xlsx";
+import { useSession } from "next-auth/react";
 
 const customStyles = {
   headCells: {
@@ -20,6 +21,7 @@ const customStyles = {
 };
 
 const UsulanPage = () => {
+  const { data: session } = useSession();
   const [page, setPage] = useState(1);
   const [perPage, setPerpage] = useState(10);
   const [isLoading, setLoading] = useState(true);
@@ -98,7 +100,8 @@ const UsulanPage = () => {
       width: "260px",
       cell: (row) => (
         <div className="d-flex">
-          {row.userId == userId && row.accPimpinan == 0 && (
+          {(session?.user.role == "admin" ||
+            (row.userId == userId && row.accPimpinan == 0)) && (
             <>
               <Update reload={reload} usulan={row} komponens={komponens} />
               <Delete reload={reload} usulan={row} />
@@ -184,7 +187,9 @@ const UsulanPage = () => {
       </div>
 
       <div className="card-header">
-        <Add reload={reload} komponens={komponens} />
+        {session?.user.role == "user" && (
+          <Add reload={reload} komponens={komponens} />
+        )}
 
         <button
           onClick={() => onGetExporProduct("Usulan", "UsulanExport")}

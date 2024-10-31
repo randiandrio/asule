@@ -2,7 +2,6 @@
 import { signIn } from "next-auth/react";
 import { SyntheticEvent, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import ReCAPTCHA from "react-google-recaptcha";
 import Image from "next/image";
 import React from "react";
 

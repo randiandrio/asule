@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getToken } from "next-auth/jwt";
-import { AdminLogin } from "next-auth";
-import { tree } from "next/dist/build/templates/app-page";
+import { User } from "next-auth";
 
 const prisma = new PrismaClient();
 
@@ -15,7 +14,7 @@ export const GET = async (
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  const adminLogin = token as unknown as AdminLogin;
+  const adminLogin = token as unknown as User;
 
   if (params.slug[0] === "data") {
     const result = await Data(adminLogin);
@@ -39,7 +38,7 @@ export const PATCH = async (
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  const adminLogin = token as unknown as AdminLogin;
+  const adminLogin = token as unknown as User;
 
   const data = await request.formData();
 
@@ -49,40 +48,58 @@ export const PATCH = async (
   }
 };
 
-async function Data(admin: AdminLogin) {
-  const users = await prisma.disposisi.findMany({
-    where: { userId: Number(admin.id) },
-  });
-
-  var usulanIds = users.map(function (item) {
-    return item.usulanId;
-  });
-
-  const data = await prisma.usulan.findMany({
-    where: {
-      id: {
-        in: usulanIds,
+async function Data(admin: User) {
+  let data;
+  if (admin.role == "admin") {
+    data = await prisma.usulan.findMany({
+      include: {
+        user: {
+          include: {
+            bidang: true,
+            instalasi: true,
+            ruangan: true,
+          },
+        },
+        komponen: true,
       },
-    },
-    include: {
-      user: {
-        include: {
-          bidang: true,
-          instalasi: true,
-          ruangan: true,
+      orderBy: {
+        id: "desc",
+      },
+    });
+  } else {
+    const users = await prisma.disposisi.findMany({
+      where: { userId: Number(admin.id) },
+    });
+
+    var usulanIds = users.map(function (item) {
+      return item.usulanId;
+    });
+    data = await prisma.usulan.findMany({
+      where: {
+        id: {
+          in: usulanIds,
         },
       },
-      komponen: true,
-    },
-    orderBy: {
-      id: "desc",
-    },
-  });
+      include: {
+        user: {
+          include: {
+            bidang: true,
+            instalasi: true,
+            ruangan: true,
+          },
+        },
+        komponen: true,
+      },
+      orderBy: {
+        id: "desc",
+      },
+    });
+  }
 
   return { data: data, userId: admin.id };
 }
 
-async function Detail(id: String, admin: AdminLogin) {
+async function Detail(id: String, admin: User) {
   const usulan = await prisma.usulan.findUnique({
     where: { id: Number(id) },
     include: {
@@ -118,7 +135,7 @@ async function Detail(id: String, admin: AdminLogin) {
   return { data: usulan, user: user, disposisi: disposisi.length > 0 };
 }
 
-async function Post(data: any, admin: AdminLogin) {
+async function Post(data: any, admin: User) {
   const user = await prisma.user.findUnique({
     where: { id: Number(admin.id) },
     include: {

@@ -5,14 +5,7 @@ import DataTable, { TableColumn } from "react-data-table-component";
 import Add from "./action/Add";
 import Update from "./action/update";
 import Delete from "./action/Delete";
-import {
-  Bidang,
-  Instalasi,
-  Jabatan,
-  Output,
-  Ruangan,
-  User,
-} from "@prisma/client";
+import { Bidang, Instalasi, Jabatan, Output, Ruangan } from "@prisma/client";
 
 const customStyles = {
   headCells: {
@@ -27,7 +20,6 @@ const customStyles = {
 const KaryawanPage = () => {
   const [page, setPage] = useState(1);
   const [perPage, setPerpage] = useState(10);
-
   const [isLoading, setLoading] = useState(true);
   const [datas, setDatas] = useState<any[]>([]);
   const [jabatans, setJabatans] = useState<Jabatan[]>([]);

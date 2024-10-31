@@ -1,21 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { getToken } from "next-auth/jwt";
-import { AdminLogin } from "next-auth";
-
 const prisma = new PrismaClient();
 
 export const GET = async (
   request: NextRequest,
   { params }: { params: { slug: string[] } }
 ) => {
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET,
-  });
-
-  const adminLogin = token as unknown as AdminLogin;
-
   if (params.slug[0] === "kelompok") {
     const result = await Kelompok(params.slug[1]);
     return NextResponse.json(result, { status: 200 });
